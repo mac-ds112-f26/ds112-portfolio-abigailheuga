@@ -1,0 +1,12 @@
+schema: "classroom50/repo-config/v1"
+classroom: "ds112"
+assignment: "portfolio"
+owner:
+  username: "abigailheuga"
+  id: 205690659
+  accepted_at: "2026-09-10T02:31:38Z"
+source:
+  owner: "mac-ds112-f26"
+  owner_id: 323651608
+  repo: "portfolio-template"
+  branch: "main"
