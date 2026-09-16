@@ -73,6 +73,8 @@ book:
       chapters:
       - pcl/pcl.qmd
       - pcl/0911-introductionMM.pdf
+      - pcl/0914-RStudioMM
+      - pcl/0916-UnivariateVizMM
 
     - part: "In-Class Activities"
       chapters:
