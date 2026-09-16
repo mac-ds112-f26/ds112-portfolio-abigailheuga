@@ -40,10 +40,10 @@ Toggling between the .qmd and .html files, explain the purpose of the following 
 > makes a comment
 
 `-`
->
+> makes a bullet point/bulleted list
 
 `\`
->
+> represents special charactiers insdie strings (R code), i.e. forces hard line breaks
 
 `![](url)`
 > imports a link to a website
