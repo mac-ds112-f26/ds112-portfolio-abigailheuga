@@ -39,7 +39,7 @@ We'll address the above questions using `ggplot` tools. Try running the followin
 
 ```{r}
 # Use the ggplot function
-ggplot(hikes, aes(x = rating))
+# ggplot(hikes, aes(x = rating))
 ```
 
 In order to use `ggplot` tools, we have to first *load* the `tidyverse` package in which they live. We've *installed* the package but we need to tell R when we want to *use* it. Run the chunk below to load the library. You'll need to do this within any .qmd file that uses `ggplot()`.
@@ -224,7 +224,9 @@ We must then *translate* this information into the *context* of our analysis, he
 2-MINUTE CHALLENGE: Thinking of the bar chart code, try to *intuit* what line you can tack on to the below frame of `elevation` to add a histogram layer. Don't forget a `+`. If it doesn't come to you within 2 minutes, *no problem* -- all will be revealed in the next exercise.
 
 ```{r}
-ggplot(hikes, aes(x = elevation))
+library (ggplot2)
+ggplot(hikes, aes(x = elevation)) +
+  geom_histogram()
 ```
 
 
@@ -233,46 +235,46 @@ ggplot(hikes, aes(x = elevation))
 Let's build some histograms. Try each chunk below, *one by one*. In each chunk, make a comment about how both the code and the corresponding plot both changed.
 
 ```{r}
-# COMMENT on the change in the code and the corresponding change in the plot
+# adds histogram onto the background 
 ggplot(hikes, aes(x = elevation)) +
   geom_histogram()
 ```
 
 ```{r}
-# COMMENT on the change in the code and the corresponding change in the plot
+# changes the color of the outline of the bars
 ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white") 
 ```
 
 ```{r}
-# COMMENT on the change in the code and the corresponding change in the plot
+# makes the fill color of the bars
 ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white", fill = "blue") 
 ```
 
 ```{r}
-# COMMENT on the change in the code and the corresponding change in the plot
+# customizes the axis titles
 ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white") +
   labs(x = "Elevation (feet)", y = "Number of hikes")
 ```
 
 ```{r}
-# COMMENT on the change in the code and the corresponding change in the plot
+# sets the range of elevations that are a part of each bar (makes it wider)
 ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white", binwidth = 1000) +
   labs(x = "Elevation (feet)", y = "Number of hikes")
 ```
 
 ```{r}
-# COMMENT on the change in the code and the corresponding change in the plot
+# sets the range of elevations that are a part of each bar (makes it smaller)
 ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white", binwidth = 5) +
   labs(x = "Elevation (feet)", y = "Number of hikes")
 ```
 
 ```{r}
-# COMMENT on the change in the code and the corresponding change in the plot
+# sets the range of elevations that are a part of each bar (makes it more medium width)
 ggplot(hikes, aes(x = elevation)) +
   geom_histogram(color = "white", binwidth = 200) +
   labs(x = "Elevation (feet)", y = "Number of hikes")
@@ -282,11 +284,22 @@ ggplot(hikes, aes(x = elevation)) +
 ## Exercise 10: Histogram Follow-up
 
 -   What function added the histogram layer / geometry?
+> geom_histogram()
+
 -   What's the difference between `color` and `fill`?
+> color = outline color, fill = bar color
+
 -   Why does adding `color = "white"` improve the visualization?
+> creates separation between the bars to better see the ranges of each bar
+
 -   What did `binwidth` do?
+> adjust how wide the bars are
+
 -   Why does the histogram become ineffective if the `binwidth` is too big (eg, 1000 feet)?
+> there are too many observations per bin so it's hard to see trends in the data 
+
 -   Why does the histogram become ineffective if the `binwidth` is too small (eg, 5 feet)?
+> opposite of above answer; not enough data in each bin but still hard to see any trends in the data 
 
 
 ## Exercise 11: Density Plots
@@ -304,23 +317,25 @@ ggplot(hikes, aes(x = elevation)) +
 
 -   INTUITION CHECK: Before tweaking the code and thinking back to `geom_bar()` and `geom_histogram()`, how do you *anticipate* the following code will change the plot?
 
-    -   `geom_density(color = "blue")`
-    -   `geom_density(fill = "orange")`
+    -   `geom_density(color = "blue")` --> outline color will be blue
+    -   `geom_density(fill = "orange")` --> base color of the bars will be orange
 
 -   TRY IT! Test out those lines in the chunk below. Was your intuition correct?
 
 ```{r}
 # Write your code here
-
+ggplot(hikes, aes(x = elevation)) +
+  geom_density(color = "blue", fill = "orange")
 ```
 
 -   Examine the density plot. How does it compare to the histogram? What does it tell you about the *typical* elevation, *variability / range* in elevations, and *shape* of the distribution of *elevations* within this range?
-
+> Typical elevation is ~4200, range is 3500 to 6000, and shape is a left-skewed bell curve
 
 
 ## Exercise 12: Density Plots vs Histograms
 
 The histogram and density plot both allow us to visualize the behavior of a quantitative variable: typical outcome, variability / range, shape, and outliers. What are the pros/cons of each? What do you like/not like about each?
+> Harder to tell the number of observations in each graph in density plot, but easier to tell how the data is trending
 
 
 ## Exercise 13: Code = communication
@@ -336,6 +351,7 @@ ggplot(___, aes(x = ___)) +
 ```
 
 -   Though not *necessary* to the code working, it's common, good practice to *indent* or *tab* the lines of code after the first line (counterexample below). Why?
+> makes it easier to see what blocks of code do what (e.g. this block makes the chart)
 
 ```{r}
 # YUCK
@@ -345,6 +361,7 @@ labs(x = "Elevation (feet)", y = "Number of hikes")
 ```
 
 -   Though not *necessary* to the code working, it's common, good practice to put a *line break* after each `+` (counterexample below). Why?
+> easier to read and potentially easier find errors if there are any
 
 ```{r}
 # YUCK 
@@ -360,10 +377,10 @@ Practice your viz skills to learn about some of the variables in one of the foll
 
 ```{r}
 # Data on students in this class
-survey <- read.csv("../data/survey.csv")
+# survey <- read.csv("../data/survey.csv")
 
 # World Cup data
-world_cup <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-11-29/worldcups.csv")
+# world_cup <- read.csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-11-29/worldcups.csv")
 ```
 
 #### Part b
