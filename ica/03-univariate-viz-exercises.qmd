@@ -10,7 +10,7 @@ Before starting, review the [ICA Instructions ⭐](https://hash-mac.github.io/ds
 
 ## Setup
 
-Load the data first.
+Load the data first. testing
 
 ```{r}
 # Import data
