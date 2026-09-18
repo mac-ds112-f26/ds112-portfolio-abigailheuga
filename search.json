@@ -124,7 +124,7 @@
     "href": "ica/quarto-demo.html#exercise-1-deduce-quarto-features",
     "title": "My first Quarto document",
     "section": "Exercise 1: Deduce Quarto features",
-    "text": "Exercise 1: Deduce Quarto features\nCheck out the appearance and contents of this document. Thoughts?\nIn the toolbar at the top of this document, Render the .qmd file into a .html file. Where is this file stored? Thoughts about its appearance / contents? Can you edit it?\n\nfile is stored locally, easier to read, not editable\n\nToggling between the .qmd and .html files, explain the purpose of the following features in the .qmd file:\n*\n**\n#\n-\n\\\n![](url)\n\nputs it in a string",
+    "text": "Exercise 1: Deduce Quarto features\nCheck out the appearance and contents of this document. Thoughts?\nIn the toolbar at the top of this document, Render the .qmd file into a .html file. Where is this file stored? Thoughts about its appearance / contents? Can you edit it?\n\nfile is stored locally, easier to read, not editable\n\nToggling between the .qmd and .html files, explain the purpose of the following features in the .qmd file:\n* &gt; makes a word italisized (when surrounding)\n** &gt; makes a word bold (when surrounding)\n# &gt; makes a comment\n- &gt; makes a bullet point/bulleted list\n\\ &gt; represents special charactiers insdie strings (R code), i.e. forces hard line breaks\n![](url) &gt; imports a link to a website",
     "crumbs": [
       "In-Class Activities",
       "<span class='chapter-number'>8</span>  <span class='chapter-title'>My first Quarto document</span>"
