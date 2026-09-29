@@ -19,3 +19,12 @@ title: "Pre-Class Learning Summaries"
 
 # Univariate Viz
 ![](0916-UnivariateVizMM.png)
+
+# Bivaraite Viz
+![](0921-BivariateVizMM.png)
+
+# Multivariate Viz
+![](0928-MultivariateVizMM.png)
+
+# Spatial Viz
+![](1002-SpatialVizMM.png)
