@@ -13,6 +13,11 @@ Before starting, review the [ICA Instructions ⭐](https://hash-mac.github.io/ds
 Load the data first. 
 
 ```{r}
+library(tidymodels)
+library(tidyverse)
+```
+
+```{r}
 # Import data
 hikes <- read.csv("https://mac-stat.github.io/data/high_peaks.csv")
 ```

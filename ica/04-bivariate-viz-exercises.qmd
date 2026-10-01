@@ -19,6 +19,11 @@ A wrangled version of this data, is imported below, after being combined with:
   - purple = something in between
 
 ```{r}
+library(tidymodels)
+library(tidyverse)
+```
+
+```{r}
 # Load data
 elections <- read.csv("https://mac-stat.github.io/data/election_2020_county.csv")
 
