@@ -65,8 +65,6 @@ I rounded these to the nearest whole number, so that they're near to but not exa
 Let's load [the data](../data/our_fave_places.csv) and map it!
 
 ```{r}
-#| eval: false
-
 fave_places <- read.csv("https://hash-mac.github.io/ds112site-f26/data/our_fave_places.csv")
 
 # Check it out
@@ -97,14 +95,14 @@ leaflet(data = fave_places)
 ```{r}
 # Now what do we have?
 leaflet(data = fave_places) |> 
-  addTiles()
+  addProviderTiles("USGS")
 ```
 
 ```{r}
 # Now what do we have?
 # longitude and latitude refer to the variables in our data
 leaflet(data = fave_places) |> 
-  addTiles() |> 
+  addProviderTiles("USGS") |> 
   addMarkers(lng = ~longitude, lat = ~latitude)
 ```
 
@@ -112,7 +110,7 @@ leaflet(data = fave_places) |>
 # Since we named them "longitude" and "latitude", the function
 # automatically recognizes these variables. No need to write them!
 leaflet(data = fave_places) |> 
-  addTiles() |> 
+  addProviderTiles("USGS")|> 
   addMarkers()
 ```
 
@@ -133,7 +131,7 @@ library(gplots)
 
 # We can add colored circles instead of markers at each location
 leaflet(data = fave_places) |> 
-  addTiles() |> 
+  addProviderTiles("USGS")|> 
   addCircles(color = "red")
 ```
 
@@ -346,16 +344,16 @@ Adjust the code below to make the plot!
 Remove the `#` to run it.
 
 ```{r}
-# ggplot(___) + 
-#   geom___() + 
-#   geom___(
-#     data = ___,
-#     aes(x = ___, y = ___),
-#     alpha = 0.7,
-#     size = 0.2, 
-#     color = 'darkgreen'
-#   ) + 
-#   theme_map()
+ggplot(midwest_boundaries) +
+  geom_sf() +
+  geom_point(
+    data = starbucks_midwest,
+    aes(x = Longitude, y = Latitude),
+    alpha = 0.7,
+    size = 0.2,
+    color = 'darkgreen'
+  ) +
+  theme_map()
 ```
 
 ### ✏️ Build Contour Maps
@@ -542,6 +540,7 @@ ggplot(elections_by_state, aes(map_id = state_name, fill = repub_20_categories))
 
 We used `geom_sf()` for point maps.
 What `geom` do we use for choropleth maps?
+> geom_map
 
 ### ✏️ Map Counties with Choropleth
 
@@ -600,7 +599,13 @@ ggplot(elections_by_counties, aes(map_id = county_fips, fill = repub_20_categori
 Construct a county-level map of `median_rent`.
 
 ```{r}
-
+ggplot(elections_by_counties, aes(map_id = county_fips, fill = median_rent)) +
+  geom_map(map = county_map) +
+  expand_limits(x = county_map$long, y = county_map$lat) +
+  theme_map() +
+  theme(legend.position = "right") +
+  coord_equal() +
+  scale_fill_gradientn(name = "median rent", colors = c("white", "lightgreen", "darkgreen"))
 ```
 
 ### ✏️ Map Median Age
@@ -608,7 +613,13 @@ Construct a county-level map of `median_rent`.
 Construct a county-level map of `median_age`.
 
 ```{r}
-
+ggplot(elections_by_counties, aes(map_id = county_fips, fill = median_age)) +
+  geom_map(map = county_map) +
+  expand_limits(x = county_map$long, y = county_map$lat) +
+  theme_map() +
+  theme(legend.position = "right") + 
+  coord_equal() + 
+  scale_fill_gradientn(name = "median age", colors = terrain.colors(10))
 ```
 
 ### ✏️ Build Choropleth with Leaflet
@@ -617,3 +628,43 @@ Though `ggplot()` is often better for this purpose, we can also make choropleth 
 If you're curious, check out the `leaflet` documentation:
 
 <https://rstudio.github.io/leaflet/choropleths.html>
+
+```{r}
+# From https://leafletjs.com/examples/choropleth/us-states.js
+states <- sf::read_sf("https://rstudio.github.io/leaflet/json/us-states.geojson")
+
+bins <- c(0, 10, 20, 50, 100, 200, 500, 1000, Inf)
+pal <- colorBin("magma", domain = states$density, bins = bins)
+
+labels <- sprintf(
+  "<strong>%s</strong><br/>%g people / mi<sup>2</sup>",
+  states$name, states$density
+) %>% lapply(htmltools::HTML)
+
+leaflet(states) %>%
+  setView(-96, 37.8, 4) %>%
+  addProviderTiles("MapBox", options = providerTileOptions(
+    id = "mapbox.light",
+    accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN'))) %>%
+  addPolygons(
+    fillColor = ~pal(density),
+    weight = 2,
+    opacity = 1,
+    color = "white",
+    dashArray = "3",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 5,
+      color = "gold",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto")) %>%
+  addLegend(pal = pal, values = ~density, opacity = 0.7, title = NULL,
+    position = "bottomright")
+```
+
