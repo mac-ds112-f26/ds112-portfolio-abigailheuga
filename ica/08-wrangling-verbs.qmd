@@ -395,12 +395,11 @@ Each of the next 3 exercises is a challenge. If you get really stuck, use the se
 Sort the *states* from the most to least total votes cast in 2020.
 
 ```{r}
-
-```
-
-```{r}
-# HINT: Calculate the total number of votes in each state, then sort
-
+# Sort the states from the most to least total votes in 2020
+elections_small |> 
+  group_by(state_name) |> 
+  summarize(total = sum(total_votes_20)) |> 
+  arrange(desc(total))
 ```
 
 
@@ -409,13 +408,15 @@ Sort the *states* from the most to least total votes cast in 2020.
 In 2020, what was the total number of votes for the Democratic candidate and the total number of votes for the Republican candidate in each *state*?
 
 ```{r}
-
-```
-
-```{r}
 # HINT: First calculate the number of Dem and Repub votes in each *county*
 # Then group and summarize these by state
 
+elections_small |> 
+  mutate(dem_votes_20 = round(total_votes_20 * dem_pct_20 / 100), 
+         repub_votes_20 = round(total_votes_20 * repub_pct_20 / 100)) |> 
+  group_by(state_name) |> 
+  summarize(dem_total = sum(dem_votes_20),
+            repub_total = sum(repub_votes_20))
 ```
 
 
@@ -424,12 +425,15 @@ In 2020, what was the total number of votes for the Democratic candidate and the
 What states did the Democratic candidate win in 2020?
 
 ```{r}
-
-```
-
-```{r}
 # HINT: Start with the results from the previous chunk, and then keep only some rows
-
+# What states did the Democratic candidate win in 2020?
+elections_small |> 
+  mutate(dem_votes_20 = round(total_votes_20 * dem_pct_20 / 100), 
+         repub_votes_20 = round(total_votes_20 * repub_pct_20 / 100)) |> 
+  group_by(state_name) |> 
+  summarize(dem_total = sum(dem_votes_20),
+            repub_total = sum(repub_votes_20)) |> 
+  filter(dem_total > repub_total)
 ```
 
 
@@ -449,7 +453,8 @@ You can find a codebook [here](https://github.com/rfordatascience/tidytuesday/tr
 In what years did Brazil win the World Cup?
 
 ```{r}
-
+world_cup |> 
+  filter(winner == "Brazil")
 ```
 
 
@@ -458,7 +463,10 @@ In what years did Brazil win the World Cup?
 What were the 6 World Cups with the highest attendance?
 
 ```{r}
-
+# What were the 6 World Cups with the highest attendance?
+world_cup |> 
+  arrange(desc(attendance)) |> 
+  head()
 ```
 
 
@@ -467,7 +475,11 @@ What were the 6 World Cups with the highest attendance?
 Construct a univariate plot of `goals_scored` (no wrangling necessary). This provides a visual summary of how the number of `goals_scored` varies from World Cup to World Cup.
 
 ```{r}
-
+library(tidyverse)
+# Construct a univariate plot of goals_scored (no wrangling necessary)
+# This provides a visual summary of how the number of goals_scored varies from World Cup to World Cup
+ggplot(world_cup, aes(x = goals_scored)) +
+  geom_histogram(color = "white", binwidth = 10)
 ```
 
 
@@ -476,7 +488,13 @@ Construct a univariate plot of `goals_scored` (no wrangling necessary). This pro
 Let's follow up the plot with some more precise numerical summaries. Calculate the min, median, and max number of `goals_scored` across all World Cups. NOTE: Visually compare these numerical summaries to what you observed in the plot.
 
 ```{r}
-
+# Let's follow up the plot with some more precise numerical summaries
+# Calculate the min, median, and max number of goals_scored across all World Cups
+# NOTE: Visually compare these numerical summaries to what you observed in the plot
+world_cup |> 
+  summarize(min_goals = min(goals_scored),
+            median_goals = median(goals_scored),
+            max_goals = max(goals_scored))
 ```
 
 
@@ -485,7 +503,11 @@ Let's follow up the plot with some more precise numerical summaries. Calculate t
 Construct a bivariate plot of how the number of `goals_scored` in the World Cup has changed over the years. No wrangling necessary.
 
 ```{r}
-
+# Construct a bivariate plot of how the number of goals_scored in the World Cup has changed over the years
+# No wrangling necessary
+ggplot(world_cup, aes(x = year, y = goals_scored)) + 
+  geom_point() + 
+  geom_line()
 ```
 
 
@@ -494,7 +516,15 @@ Construct a bivariate plot of how the number of `goals_scored` in the World Cup 
 Our above summaries might be a bit misleading. The number of games played at the World Cup varies. Construct a bivariate plot of how the typical number of goals per game has changed over the years.
 
 ```{r}
+# Our above summaries might be a bit misleading.
+# The number of games played at the World Cup varies.
+# Construct a bivariate plot of how the typical number of goals per game has changed over the years
+per_game_data <- world_cup |> 
+  mutate(goals_per_game = goals_scored / games)
 
+ggplot(per_game_data, aes(x = year, y = goals_per_game)) + 
+  geom_point() + 
+  geom_line()
 ```
 
 
