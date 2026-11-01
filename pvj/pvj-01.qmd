@@ -6,8 +6,67 @@ title: "Personal Visualization Journey"
 # uploading data
 install.packages("readr")
 library(readr)
+library(tidyverse)
+library(lubridate)
 
-health_data <- read_csv("apple_health_records.csv")
+health <- read_csv("apple_health_records.csv")
 
-View(health_data)
+view(health)
 ```
+```{r}
+# see which types of health data are available
+health |>
+  count(type, sort = TRUE)
+```
+
+```{r}
+# calculate daily step counts
+steps_daily <- health |>
+  filter(type == "HKQuantityTypeIdentifierStepCount") |>
+  mutate(date = as.Date(startDate), value = as.numeric(value)) |>
+  group_by(date) |>
+  summarize(steps = sum(value, na.rm = TRUE), .groups = "drop") |>
+  mutate(
+    day_of_week = wday(date, label = TRUE, week_start = 1),
+    day_type = if_else(
+      day_of_week %in% c("Sat", "Sun"),
+      "Weekend",
+      "Weekday"
+    )
+  )
+```
+
+```{r}
+# examine the resulting dataset
+summary(steps_daily)
+```
+
+```{r}
+# initial visualization 
+ggplot(steps_daily, aes(x = date, y = steps)) +
+  geom_line(alpha = 0.5) +
+  geom_smooth(se = FALSE) +
+  labs(
+    title = "My Daily Step Count Over Time",
+    x = "Date",
+    y = "Total Steps per Day",
+    caption = "Source: Personal Apple Health export"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+# multivariate visualization 
+ggplot(steps_daily, aes(x = day_of_week, y = steps)) +
+  geom_boxplot(aes(fill = day_type)) +
+  labs(
+    title = "Walking Distance based on Weekday vs. Weekend",
+    subtitle = "Distribution of daily steps by day of the week",
+    x = "Day of the Week",
+    y = "Total Steps per Day",
+    fill = "Day Type",
+    caption = "Source: Personal Apple Health export"
+  ) +
+  theme_minimal()
+```
+
