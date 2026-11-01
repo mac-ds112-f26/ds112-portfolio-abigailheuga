@@ -9,3 +9,22 @@ title: "Pre-Class Learning Summaries"
 ## Quarto
 
 ![from qmd4sci.njtierney.com](0810-quarto.jpeg)
+
+## Introduction
+
+![](0911-introductionMM.png)
+
+# RStudio
+![](0914-RStudioMM.png)
+
+# Univariate Viz
+![](0916-UnivariateVizMM.png)
+
+# Bivaraite Viz
+![](0921-BivariateVizMM.png)
+
+# Multivariate Viz
+![](0928-MultivariateVizMM.png)
+
+# Spatial Viz
+![](1002-SpatialVizMM.png)
