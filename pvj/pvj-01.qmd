@@ -56,16 +56,38 @@ ggplot(steps_daily, aes(x = date, y = steps)) +
 ```
 
 ```{r}
+# calculate median step count for each day
+median_labels <- steps_daily %>%
+  group_by(day_of_week) %>%
+  summarize(median_steps = median(steps, na.rm = TRUE), .groups = "drop")
+```
+
+```{r}
+# Identify the date range
+start_date <- min(steps_daily$date, na.rm = TRUE)
+end_date <- max(steps_daily$date, na.rm = TRUE)
+```
+
+```{r}
 # multivariate visualization 
 ggplot(steps_daily, aes(x = day_of_week, y = steps)) +
   geom_boxplot(aes(fill = day_type)) +
+  geom_text(data = median_labels, aes(x = day_of_week, y = median_steps, label = scales::comma(round(median_steps))),
+    vjust = -0.8,
+    fontface = "bold",
+    size = 3,
+    inherit.aes = FALSE
+  ) +
+  scale_fill_manual(values = c("Weekday" = "#D55E00","Weekend" = "#0072B2")) +
+  scale_y_continuous(labels = scales::label_comma()) +
   labs(
-    title = "Walking Distance based on Weekday vs. Weekend",
-    subtitle = "Distribution of daily steps by day of the week",
+    title = "Do I Walk More on Weekdays or Weekends?",
+    subtitle = paste("Median daily step counts by day of the week |", format(start_date, "%b %d, %Y"), "–", format(end_date, "%b %d, %Y")),
     x = "Day of the Week",
     y = "Total Steps per Day",
     fill = "Day Type",
-    caption = "Source: Personal Apple Health export"
+    caption = "Author: Abigail Heuga | Date: November 10, 2026 | Data Source: Personal Apple Health export",
+    alt = "Boxplots comparing daily step counts by day of the week from January 15, 2018, to October 27, 2026. Median steps are 3,133 on Monday, 3,256 on Tuesday, 3,279 on Wednesday, 3,446 on Thursday, 3,996 on Friday, 2,786 on Saturday, and 2,293 on Sunday. Weekday step counts are generally higher than weekend step counts, with Friday having the highest median and Sunday the lowest."
   ) +
   theme_minimal()
 ```
