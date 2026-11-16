@@ -2,4 +2,93 @@
 title: "Personal Visualization Journey"
 ---
 
-Add content here
+```{r}
+# uploading data
+install.packages("readr")
+library(readr)
+library(tidyverse)
+library(lubridate)
+
+health <- read_csv("apple_health_records.csv")
+
+view(health)
+```
+```{r}
+# see which types of health data are available
+health |>
+  count(type, sort = TRUE)
+```
+
+```{r}
+# calculate daily step counts
+steps_daily <- health |>
+  filter(type == "HKQuantityTypeIdentifierStepCount") |>
+  mutate(date = as.Date(startDate), value = as.numeric(value)) |>
+  group_by(date) |>
+  summarize(steps = sum(value, na.rm = TRUE), .groups = "drop") |>
+  mutate(
+    day_of_week = wday(date, label = TRUE, week_start = 1),
+    day_type = if_else(
+      day_of_week %in% c("Sat", "Sun"),
+      "Weekend",
+      "Weekday"
+    )
+  )
+```
+
+```{r}
+# examine the resulting dataset
+summary(steps_daily)
+```
+
+```{r}
+# initial visualization 
+ggplot(steps_daily, aes(x = date, y = steps)) +
+  geom_line(alpha = 0.5) +
+  geom_smooth(se = FALSE) +
+  labs(
+    title = "My Daily Step Count Over Time",
+    x = "Date",
+    y = "Total Steps per Day",
+    caption = "Source: Personal Apple Health export"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+# calculate median step count for each day
+median_labels <- steps_daily %>%
+  group_by(day_of_week) %>%
+  summarize(median_steps = median(steps, na.rm = TRUE), .groups = "drop")
+```
+
+```{r}
+# Identify the date range
+start_date <- min(steps_daily$date, na.rm = TRUE)
+end_date <- max(steps_daily$date, na.rm = TRUE)
+```
+
+```{r}
+# multivariate visualization 
+ggplot(steps_daily, aes(x = day_of_week, y = steps)) +
+  geom_boxplot(aes(fill = day_type)) +
+  geom_text(data = median_labels, aes(x = day_of_week, y = median_steps, label = scales::comma(round(median_steps))),
+    vjust = -0.8,
+    fontface = "bold",
+    size = 3,
+    inherit.aes = FALSE
+  ) +
+  scale_fill_manual(values = c("Weekday" = "#D55E00","Weekend" = "#0072B2")) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  labs(
+    title = "Do I Walk More on Weekdays or Weekends?",
+    subtitle = paste("Median daily step counts by day of the week |", format(start_date, "%b %d, %Y"), "–", format(end_date, "%b %d, %Y")),
+    x = "Day of the Week",
+    y = "Total Steps per Day",
+    fill = "Day Type",
+    caption = "Author: Abigail Heuga | Date: November 10, 2026 | Data Source: Personal Apple Health export",
+    alt = "Boxplots comparing daily step counts by day of the week from January 15, 2018, to October 27, 2026. Median steps are 3,133 on Monday, 3,256 on Tuesday, 3,279 on Wednesday, 3,446 on Thursday, 3,996 on Friday, 2,786 on Saturday, and 2,293 on Sunday. Weekday step counts are generally higher than weekend step counts, with Friday having the highest median and Sunday the lowest."
+  ) +
+  theme_minimal()
+```
+
